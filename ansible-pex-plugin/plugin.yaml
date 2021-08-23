@@ -1,0 +1,68 @@
+name: ansible-pex
+version: 1.0
+rundeckPluginVersion: 1.2
+author: Ramon Velasco
+date: 2021-08-11
+providers:
+  - name: ansible-pex
+    service: WorkflowNodeStep
+    title: Ansible Pex Step
+    description: Executes ansible in a portable python virtual environment
+    plugin-type: script
+    script-interpreter: /bin/bash
+    script-file: deploy.sh
+    config:
+      - name: ssh_key_storage_path
+        title: SSH key Storage Path
+        type: String
+        required: true
+        description: "SSH private key to use"
+        scope: Instance
+        renderingOptions:
+          selectionAccessor: "STORAGE_PATH"
+          valueConversion: "STORAGE_PATH_AUTOMATIC_READ"
+          storage-path-root: "keys"
+          instance-scope-node-attribute: "ssh-key-storage-path"
+      - name: ansible_user
+        title: Ansible User
+        type: String
+        required: true
+        description: "Ansible user defined in the playbooks"
+      - name: pex_source_url
+        title: PEX Source URL
+        type: String
+        required: true
+        description: "Ansible pex source url"
+      - name: workdir
+        title: Ansible working directory
+        type: String
+        required: true
+        description: "Full path of the ansible working directory"
+      - name: playbook
+        title: Playbook Name
+        type: String
+        description: "Playbook from the workdir"
+      - name: inventory_file
+        title: Ansible Inventory
+        type: String
+        required: true
+        description: "Ansible inventory from the workdir"
+      - name: extra_vars
+        title: Extra Variables
+        type: String
+        required: false
+        description: 'Provide one or more extra vars as "key1":"value1", "key2":"value2"...(optional)'
+      - name: become
+        title: Use become privilege escalation
+        type: Boolean
+        description: "Run operations with become sudo (nopasswd implied)."
+      - name: vault_file
+        title: Vault Key File path
+        type: String
+        required: false
+        description: "File Path to ansible vault key to use (optional)."
+      - name: extra_raw_cmds
+        title: Extra Ansible arguments
+        type: String
+        required: false
+        description: "Additional ansible raw command line arguments to be appended to the executed command (optional)."
