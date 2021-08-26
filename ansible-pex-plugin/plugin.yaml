@@ -1,5 +1,5 @@
 name: ansible-pex
-version: 1.0
+version: 2e33157
 rundeckPluginVersion: 1.2
 author: Ramon Velasco
 date: 2021-08-11
@@ -7,55 +7,80 @@ providers:
   - name: ansible-pex
     service: WorkflowNodeStep
     title: Ansible Pex Step
-    description: Executes ansible in a portable python virtual environment
+    description: "Executes ansible in a portable python virtual environment."
     plugin-type: script
     script-interpreter: /bin/bash
     script-file: deploy.sh
     config:
+      - name: ansible_user
+        title: Ansible User
+        type: String
+        required: true
+        description: "Ansible user to connect to the target hosts."
       - name: ssh_key_storage_path
         title: SSH key Storage Path
         type: String
         required: true
-        description: "SSH private key to use"
+        description: "SSH private key of the ansible user."
         scope: Instance
         renderingOptions:
           selectionAccessor: "STORAGE_PATH"
           valueConversion: "STORAGE_PATH_AUTOMATIC_READ"
           storage-path-root: "keys"
           instance-scope-node-attribute: "ssh-key-storage-path"
-      - name: ansible_user
-        title: Ansible User
-        type: String
-        required: true
-        description: "Ansible user defined in the playbooks"
       - name: pex_source_url
         title: PEX Source URL
         type: String
         required: true
-        description: "Ansible pex source url"
-      - name: workdir
-        title: Ansible working directory
+        description: "Ansible pex source url."
+      - name: source_code_download_options
+        title: Ansible Source Code Download Options
+        type: Options
+        values: git-repo,tarfile,ansible-galaxy
+        required: false
+        description: "Select one or more ansible source code download options."
+      - name: gitrepo_source
+        title: Git Repository Source
         type: String
-        required: true
-        description: "Full path of the ansible working directory"
+        required: false
+        description: "Provide the git repo source url."
+      - name: tarfile_source
+        title: Tarfile Source
+        type: String
+        required: false
+        description: "Provide the tarfile source url. The tarfile should be either tar or tar.gz format"
+      - name: ansible_galaxy_source
+        title: Ansible Galaxy Source
+        type: String
+        required: false
+        description: "Specify the requirements.yml with its path relative to the source repository."
       - name: playbook
         title: Playbook Name
         type: String
-        description: "Playbook from the workdir"
+        description: "Provide the playbook with its path relative to the source repository."
       - name: inventory_file
         title: Ansible Inventory
         type: String
         required: true
-        description: "Ansible inventory from the workdir"
+        description: "Provide the ansible inventory file with its path relative to the source repository."
+      - name: limit
+        title: Limit hosts
+        type: String
+        required: true
+        description: "Provide one or more comma separated hostnames. This is the --limit argument."
       - name: extra_vars
         title: Extra Variables
         type: String
         required: false
-        description: 'Provide one or more extra vars as "key1":"value1", "key2":"value2"...(optional)'
+        description: 'Provide one or more extra vars as "key1":"value1", "key2":"value2"...(optional).'
       - name: become
         title: Use become privilege escalation
         type: Boolean
         description: "Run operations with become sudo (nopasswd implied)."
+      - name: check_mode
+        title: Run as check mode
+        type: Boolean
+        description: "Run the playbook as check mode."
       - name: vault_file
         title: Vault Key File path
         type: String
@@ -66,3 +91,4 @@ providers:
         type: String
         required: false
         description: "Additional ansible raw command line arguments to be appended to the executed command (optional)."
+
