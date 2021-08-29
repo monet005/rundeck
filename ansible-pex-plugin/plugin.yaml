@@ -44,6 +44,11 @@ providers:
         type: String
         required: false
         description: "Provide the git repo source url."
+      - name: git_commit_id
+        title: Git Commit ID
+        type: String
+        required: false
+        description: "Provide either git commit ID or tag (optional)."
       - name: tarfile_source
         title: Tarfile Source
         type: String
