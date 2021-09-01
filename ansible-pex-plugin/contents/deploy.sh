@@ -127,7 +127,7 @@ if ! PEX_ROOT=${PEX_CACHE} PEX_SCRIPT=ansible-playbook ./"$PEX_BINARY" \
     --ssh-extra-args='-o StrictHostKeyChecking=no' \
     "${extra_args[@]}"
 then
-    logit fata "$RD_CONFIG_PLAYBOOK playbook execution is not successful"
+    logit fatal "$RD_CONFIG_PLAYBOOK playbook execution is not successful"
 fi
 
 
