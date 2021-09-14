@@ -10,6 +10,7 @@ PEX_CACHE=$WORKDIR/.pex
 ROLESDIR=${WORKDIR}/$(dirname "$RD_CONFIG_PLAYBOOK")/roles
 REPODIR=${WORKDIR}/$(dirname "$RD_CONFIG_PLAYBOOK" | cut -d/ -f1)
 extra_args=()
+PLUGIN_VERSION=${RD_CONFIG_PLUGIN_VERSION//## /}
 trap 'rm -rf $WORKDIR' EXIT
 
 function logit () {
@@ -62,6 +63,8 @@ function git-repo () {
         logit fatal "git-repo was selected but no source url provided"
     fi
 }
+
+logit info "Plugin Version $PLUGIN_VERSION"
 
 cd "$WORKDIR" || exit
 

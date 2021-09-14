@@ -1,5 +1,5 @@
 name: ansible-pex
-version: 2e33157
+version: 1.0
 rundeckPluginVersion: 1.2
 author: Ramon Velasco
 date: 2021-08-11
@@ -12,6 +12,14 @@ providers:
     script-interpreter: /bin/bash
     script-file: deploy.sh
     config:
+      - name: plugin_version
+        title: Plugin Version
+        type: String
+        default: "## 1.0"
+        required: false
+        renderingOptions:
+          displayType: "STATIC_TEXT"
+          staticTextContentType: "text/x-markdown"
       - name: ansible_user
         title: Ansible User
         type: String
