@@ -104,4 +104,13 @@ providers:
         type: String
         required: false
         description: "Additional ansible raw command line arguments to be appended to the executed command (optional)."
+      - name: my_vars
+        title: My vars
+        type: String
+        required: false
+        description: "Provide extra vars in YAML format"
+        renderingOptions:
+          displayType: CODE
+          codeSyntaxMode: yaml
+          codeSyntaxSelectable: false
 

@@ -66,6 +66,8 @@ function git-repo () {
 
 logit info "Plugin Version $PLUGIN_VERSION"
 
+echo "$RD_CONFIG_MY_VARS" > /var/tmp/my_vars.yaml
+
 cd "$WORKDIR" || exit
 
 curl -fLOsS "$RD_CONFIG_PEX_SOURCE_URL" && logit info "Ansible PEX downloaded successfully"
@@ -84,9 +86,14 @@ fi
 
 echo "$RD_CONFIG_SSH_KEY_STORAGE_PATH" > "$SSH_KEY_STORAGE_PATH"
 
-if [[ -n "$RD_CONFIG_EXTRA_VARS" ]]; then
-    echo "$RD_CONFIG_EXTRA_VARS" | tr ',' '\n' > "$EXTRA_VARS_PATH"
-    sed -i 's/^ *//' "$EXTRA_VARS_PATH"
+#if [[ -n "$RD_CONFIG_EXTRA_VARS" ]]; then
+#    echo "$RD_CONFIG_EXTRA_VARS" | tr ',' '\n' > "$EXTRA_VARS_PATH"
+#    sed -i 's/^ *//' "$EXTRA_VARS_PATH"
+#    extra_args+=(--extra-vars=@"$EXTRA_VARS_PATH")
+#fi
+
+if [[ -n "$RD_CONFIG_MY_VARS" ]]; then
+    echo "$RD_CONFIG_MY_VARS" > "$EXTRA_VARS_PATH"
     extra_args+=(--extra-vars=@"$EXTRA_VARS_PATH")
 fi
 
