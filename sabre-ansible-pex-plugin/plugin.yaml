@@ -1,0 +1,201 @@
+name: sabre-ansible-pex
+version: 1.1
+rundeckPluginVersion: 1.2
+author: Ramon Velasco
+date: 2021-08-11
+providers:
+  - name: sabre-ansible-pex
+    service: WorkflowNodeStep
+    title: Sabre Ansible Pex Step
+    description: "Executes ansible in a portable python virtual environment."
+    plugin-type: script
+    script-interpreter: /bin/bash
+    script-file: deploy.sh
+    config:
+      - name: plugin_version
+        title: Plugin Version
+        type: String
+        default: "## 1.1"
+        required: false
+        renderingOptions:
+          displayType: "STATIC_TEXT"
+          staticTextContentType: "text/x-markdown"
+      - name: ansible_user
+        title: Ansible User
+        type: String
+        required: true
+        description: "Remote user to connect to the target hosts."
+        renderingOptions:
+          groupName: SSH Connection
+      - name: ssh_key_storage_path
+        title: SSH key Storage Path
+        type: String
+        required: true
+        description: "SSH private key of the remote user."
+        scope: Instance
+        renderingOptions:
+          selectionAccessor: "STORAGE_PATH"
+          valueConversion: "STORAGE_PATH_AUTOMATIC_READ"
+          storage-path-root: "keys"
+          instance-scope-node-attribute: "ssh-key-storage-path"
+          groupName: SSH Connection
+      - name: become
+        title: Use become privilege escalation
+        type: Boolean
+        required: false
+        description: "Run operations with become sudo (nopasswd implied)."
+        renderingOptions:
+          groupName: SSH Connection
+      - name: source_code_download_options
+        title: Source Code Download Options
+        type: Select
+        values: bitbucket, package
+        required: true
+        description: "Select the source code download option"
+        renderingOptions:
+          groupName: Ansible Source Code Definition
+      - name: bitbucket_source
+        title: Bitbucket Repo URL (For bitbucket source)
+        type: String
+        requried: false
+        description: |
+          Provide the Bitbucket repository source url.
+          For ssh source, please provide the respective ssh url.
+          For https source with credentials, please proive the username and password in the repo url
+          Sample: https://bitbucket.global.standardchartered.com/scm/sabre-ansible/prometheus_node_exporter.git
+      - name: bitbucket_clone_method
+        title: Bitbucket Clone Method
+        type: FreeSelect
+        default: ssh_with_key_from_keystore
+        required: true
+        values: ssh_with_key_from_keystore,ssh_with_key_from_a_file,https
+        description: "Select the bitbucket clone method to use. (default: ssh_with_key_from_keystore)"
+        renderingOptions:
+          groupName: Ansible Source Code Definition
+      - name: bitbucket_ssh_key_from_keystore
+        title: "SSH key from rundeck keystore (For bitbucket source)"
+        type: String
+        requried: false
+        description: "Select the SSH private key from rundeck keystore to access bitbucket."
+        scope: Instance
+        renderingOptions:
+          selectionAccessor: "STORAGE_PATH"
+          valueConversion: "STORAGE_PATH_AUTOMATIC_READ"
+          storage-path-root: "keys"
+          instance-scope-node-attribute: "ssh-key-storage-path"
+          groupName: Ansible Source Code Definition
+      - name: bitbucket_ssh_key_from_a_file
+        title: "SSH key from a local file (For bitbucket source)"
+        type: String
+        required: false
+        description: "Provide the full path of the ssh private key to access bitbucket."
+        renderingOptions:
+          groupName: Ansible Source Code Definition
+      - name: git_commit_id
+        title: Git Branch/Tag/Commit ID (For bitbucket source)
+        type: String
+        required: false
+        description: |
+          Provide either a Git Branch, Tag, or Commit ID. Default is to use latest commit ID and master branch.
+          Sample: 9a89aa0 (commit ID), 1.0.1 (tag), staging_branch (branch)
+        renderingOptions:
+          groupName: Ansible Source Code Definition
+      - name: git_submodule
+        title: Use Git Submodule (For bitbucket source)
+        type: Boolean
+        required: false
+        description: "Enable git submodule. Ensure your source code has git modules configured (optional)."
+        renderingOptions:
+          groupName: Ansible Source Code Definition
+      - name: package_source
+        title: Package URL (For package source)
+        type: String
+        required: false
+        description: |
+          Provide the package source url. The package should be either tar ro tag.gz format
+          Sample: https://artifactory.global.standardchartered.com/artifactory/generic-release/sabre/cd/nginx/1.0.14/nginx-binarypackages.tar.gz
+        renderingOptions:
+          groupName: Ansible Source Code Definition
+      - name: ansible_galaxy_source
+        title: Requirements File (For bitbucket or package source)
+        type: String
+        required: false
+        description: |
+          Specify the requirements file path to download additional ansible galaxy roles in addition to the bitbucket or package source (optional).
+          Sample: requirements.yml
+        renderingOptions:
+          groupName: Ansible Source Code Definition
+      - name: playbook
+        title: Playbook Path
+        type: String
+        required: true
+        description: |
+          Provide the playbook path.
+          Sample: playbook/site.yml
+        renderingOptions:
+          groupName: Playbook Definition
+      - name: inventory_file
+        title: Ansible Inventory File
+        type: String
+        required: true
+        description: |
+          Provide the ansible inventory file path.
+          Sample: playbook/inventory.ini
+        renderingOptions:
+          groupName: Playbook Definition
+      - name: limit
+        title: Limit Hosts
+        type: String
+        required: true
+        description: |
+          Provide one or more comma separated hostnames.
+          Sample: host1,host2,host3 or the rundeck option variable, e.g. ${option.hostname}
+        renderingOptions:
+          groupName: Playbook Definition
+      - name: extra_vars
+        title: Extra Variables
+        type: String
+        required: false
+        description: 'Provide extra vars in YAML format'
+        renderingOptions:
+          groupName: Playbook Definition
+          displayType: CODE
+          codeSyntaxMode: yaml
+          codeSyntaxSelectable: false
+      - name: check_mode
+        title: Ansible Check Mode
+        type: FreeSelect
+        default: false
+        required: false
+        values: false,true
+        description: |
+          "Run the playbook with --check option. (default: false)"
+          Use the Options to override this flag from the execution workflow.
+        renderingOptions:
+          groupName: Playbook Definition
+      - name: vault_file
+        title: Vault Key File Path
+        type: String
+        required: false
+        description: |
+          File Path to ansible vault key to use (optional).
+          Sample: repodir/playbook/secret.txt
+        renderingOptions:
+          groupName: Playbook Definition
+      - name: extra_raw_cmds
+        title: Extra Ansible Arguments
+        type: String
+        required: false
+        description: "Additional ansible raw command line arguments to be appended to the executed command (optional)."
+        renderingOptions:
+          groupName: Playbook Definition
+      - name: ansible_facts_cache
+        title: Enable ansible facts cache?
+        type: Boolean
+        required: false
+        default: false
+        description: "By enabling this option, the plugin will gather ansible facts on all servers defined in the provided ansible inventory prior to the playbook execution. To persist the facts during execution, please ensure to define the fact_caching_connection & fact_caching directive in the ansible.cfg file in the source repo. For example, set with fact_caching_connection = .fact_cache, fact_faching = jsonfile."
+        renderingOptions:
+          groupName: Playbook Definition
+
+ 
