@@ -30,7 +30,7 @@ function check_path () {
 function ansible_galaxy_download () {
     if [[ -n "$RD_CONFIG_ANSIBLE_GALAXY_SOURCE" ]]; then
         logit info "Downloading the ansible source code from ansible galaxy: $RD_CONFIG_ANSIBLE_GALAXY_SOURCE"
-        if ! PEX_ROOT=${PEX_CACHE} PEX_SCRIPT=ansible-galaxy ./"$PEX_BINARY" \
+        if ! PEX_ROOT=${PEX_CACHE} PEX_SCRIPT=ansible-galaxy ./"$ANSIBLE_PEX_BINARY" \
             install \
             --role-file "$RD_CONFIG_ANSIBLE_GALAXY_SOURCE" \
             --roles-path "$ROLESDIR" \
@@ -44,7 +44,7 @@ function ansible_galaxy_download () {
 }
 
 function package_download () {
-    if [[ -n "RD_CONFIG_PACKAGE_SOURCE" ]]; then
+    if [[ -n "$RD_CONFIG_PACKAGE_SOURCE" ]]; then
         logit info "Downloading the ansible source code from a package: $RD_CONFIG_PACKAGE_SOURCE"
         if ! curl -fLOsS "$RD_CONFIG_PACKAGE_SOURCE"
         then
